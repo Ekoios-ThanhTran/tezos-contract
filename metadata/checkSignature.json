@@ -1,0 +1,44 @@
+{
+    "name": "Extended FA2 template contract",
+    "description": "This contract tries to simplify and extend the FA2 contract template example in smartpy.io v0.9.1",
+    "version": "v1.0.0",
+    "authors": [ "J" ],
+    "interfaces": [ "TZIP-012", "TZIP-016" ],
+    "views": [
+      {
+        "name": "get_msg_bytes",
+        "pure": true,
+        "implementations": [
+          {
+            "michelsonStorageView": {
+              "parameter": { "prim": "string" },
+              "returnType": { "prim": "bytes" },
+              "code": [
+                { "prim": "UNPAIR" },
+                { "prim": "SWAP" },
+                { "prim": "DUP" },
+                { "prim": "DUG", "args": [ { "int": "2" } ] },
+                { "prim": "GET", "args": [ { "int": "4" } ] },
+                { "prim": "SWAP" },
+                { "prim": "DIG", "args": [ { "int": "2" } ] },
+                { "prim": "GET", "args": [ { "int": "3" } ] },
+                { "prim": "PAIR", "args": [ { "int": "3" } ] },
+                { "prim": "PACK" }
+              ]
+            }
+          }
+        ]
+      },
+      { "name": "get_pk", "pure": true, "implementations": [ { "michelsonStorageView": { "returnType": { "prim": "key" }, "code": [ { "prim": "CAR" } ] } } ] },
+      {
+        "name": "get_value",
+        "pure": true,
+        "implementations": [ { "michelsonStorageView": { "returnType": { "prim": "string" }, "code": [ { "prim": "GET", "args": [ { "int": "4" } ] } ] } } ]
+      },
+      {
+        "name": "get_counter",
+        "pure": true,
+        "implementations": [ { "michelsonStorageView": { "returnType": { "prim": "int" }, "code": [ { "prim": "GET", "args": [ { "int": "3" } ] } ] } } ]
+      }
+    ]
+  }
