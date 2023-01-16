@@ -12,22 +12,22 @@ const { TezosToolkit } = require('@taquito/taquito');
 const { Tzip16Module } = require('@taquito/tzip16');
 const { tzip16 } = require('@taquito/tzip16');
 
-async function offChainView() {
+async function offChainView(contractAddr) {
     const Tezos = new TezosToolkit('https://ghostnet.ecadinfra.com/');
     Tezos.addExtension(new Tzip16Module());
 
-    const contract = await Tezos.contract.at("KT1Hmo5PGC13y6xs1YBNoRjBG8JQBFtts8TV", tzip16);
+    const contract = await Tezos.contract.at(contractAddr, tzip16);
 
-    // const metadata = await contract.tzip16().getMetadata();
+    const metadata = await contract.tzip16().getMetadata();
 
-    // console.log(metadata);
+    console.log(metadata);
 
     const metadataViews = await contract.tzip16().metadataViews();
     // const viewResult = await metadataViews.get_msg_bytes().executeView([["hello"]]);
-    const viewResult = await metadataViews.get_pk().executeView();
+    // const viewResult = await metadataViews.get_pk().executeView();
 
     console.log(metadataViews)
-    console.log(viewResult)
+    // console.log(viewResult)
 
 }
 
@@ -75,26 +75,14 @@ async function callContract() {
 
     const hash = await op.confirmation(3);
     console.log(hash);
-        // .then((contract) => {
-            // 
-            // println(`Incrementing storage value by ${i}...`);
-            // console.log("calling")
-            // return contract.methods.setCurrentValue("hello", sig.prefixSig).send();
-        // })
-        // .then((op) => {
-            // console.log(`Waiting for ${op.hash} to be confirmed...`);
-            // return op.confirmation(3).then(() => op.hash);
-        // })
-        // .then((hash) => console.log(`Operation injected: https://kathmandu.tzstats.com/${hash}`))
-        // .catch((error) => console.log(`Error: ${JSON.stringify(error, null, 2)}`));
 }
 
 async function main() {
     // await signMsg();
 
-    // await offChainView();
+    await offChainView("KT1GWCxfBQvDN1oiFPVQNadS7Mqe3LuAWZ3L");
 
-    await callContract();
+    // await callContract();
 }
 
 main()

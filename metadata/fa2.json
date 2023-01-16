@@ -1,0 +1,154 @@
+{
+    "name": "Simplified FA2 template contract",
+    "description": "This contract tries to simplify the FA2 contract template example in smartpy.io v0.9.0",
+    "version": "v1.0.0",
+    "authors": [ "Seb Mondet <https://seb.mondet.org>", "Javier Gracia Carpio <https://twitter.com/jagracar>" ],
+    "homepage": "https://github.com/jagracar/tezos-smart-contracts",
+    "source": { "tools": [ "SmartPy 0.9.0" ], "location": "https://github.com/jagracar/tezos-smart-contracts/blob/main/python/contracts/fa2Contract.py" },
+    "interfaces": [ "TZIP-012", "TZIP-016" ],
+    "views": [
+      {
+        "name": "get_balance",
+        "pure": true,
+        "description": "Returns the owner token balance.\n\n        ",
+        "implementations": [
+          {
+            "michelsonStorageView": {
+              "parameter": { "prim": "pair", "args": [ { "prim": "address", "annots": [ "%owner" ] }, { "prim": "nat", "annots": [ "%token_id" ] } ] },
+              "returnType": { "prim": "nat" },
+              "code": [
+                { "prim": "UNPAIR" },
+                { "prim": "SWAP" },
+                { "prim": "DUP" },
+                { "prim": "DUG", "args": [ { "int": "2" } ] },
+                { "prim": "GET", "args": [ { "int": "5" } ] },
+                { "prim": "SWAP" },
+                { "prim": "DUP" },
+                { "prim": "DUG", "args": [ { "int": "2" } ] },
+                { "prim": "CDR" },
+                { "prim": "MEM" },
+                { "prim": "IF", "args": [ [], [ { "prim": "PUSH", "args": [ { "prim": "string" }, { "string": "FA2_TOKEN_UNDEFINED" } ] }, { "prim": "FAILWITH" } ] ] },
+                { "prim": "SWAP" },
+                { "prim": "CAR" },
+                { "prim": "GET", "args": [ { "int": "3" } ] },
+                { "prim": "SWAP" },
+                { "prim": "GET" },
+                { "prim": "IF_NONE", "args": [ [ { "prim": "PUSH", "args": [ { "prim": "int" }, { "int": "370" } ] }, { "prim": "FAILWITH" } ], [] ] }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "does_token_exist",
+        "pure": true,
+        "description": "Checks if the token exists.\n\n        ",
+        "implementations": [
+          {
+            "michelsonStorageView": {
+              "parameter": { "prim": "nat" },
+              "returnType": { "prim": "bool" },
+              "code": [ { "prim": "UNPAIR" }, { "prim": "SWAP" }, { "prim": "GET", "args": [ { "int": "5" } ] }, { "prim": "SWAP" }, { "prim": "MEM" } ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "count_tokens",
+        "pure": true,
+        "description": "Returns how many tokens are in this FA2 contract.\n\n        ",
+        "implementations": [ { "michelsonStorageView": { "returnType": { "prim": "nat" }, "code": [ { "prim": "CAR" }, { "prim": "CAR" }, { "prim": "CDR" } ] } } ]
+      },
+      {
+        "name": "all_tokens",
+        "pure": true,
+        "description": "Returns a list with all the token ids.\n\n        ",
+        "implementations": [
+          {
+            "michelsonStorageView": {
+              "returnType": { "prim": "list", "args": [ { "prim": "nat" } ] },
+              "code": [
+                { "prim": "DUP" },
+                { "prim": "CAR" },
+                { "prim": "CAR" },
+                { "prim": "CDR" },
+                { "prim": "NIL", "args": [ { "prim": "nat" } ] },
+                { "prim": "SWAP" },
+                { "prim": "PUSH", "args": [ { "prim": "nat" }, { "int": "0" } ] },
+                { "prim": "DUP" },
+                { "prim": "DUP", "args": [ { "int": "3" } ] },
+                { "prim": "COMPARE" },
+                { "prim": "GT" },
+                {
+                  "prim": "LOOP",
+                  "args": [
+                    [
+                      { "prim": "DUP" },
+                      { "prim": "DIG", "args": [ { "int": "3" } ] },
+                      { "prim": "SWAP" },
+                      { "prim": "CONS" },
+                      { "prim": "DUG", "args": [ { "int": "2" } ] },
+                      { "prim": "PUSH", "args": [ { "prim": "nat" }, { "int": "1" } ] },
+                      { "prim": "ADD" },
+                      { "prim": "DUP" },
+                      { "prim": "DUP", "args": [ { "int": "3" } ] },
+                      { "prim": "COMPARE" },
+                      { "prim": "GT" }
+                    ]
+                  ]
+                },
+                { "prim": "DROP", "args": [ { "int": "2" } ] },
+                { "prim": "SWAP" },
+                { "prim": "DROP" },
+                { "prim": "NIL", "args": [ { "prim": "nat" } ] },
+                { "prim": "SWAP" },
+                { "prim": "ITER", "args": [ [ { "prim": "CONS" } ] ] }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "total_supply",
+        "pure": true,
+        "description": "Returns the total supply for a given token id.\n\n        ",
+        "implementations": [
+          {
+            "michelsonStorageView": {
+              "parameter": { "prim": "nat" },
+              "returnType": { "prim": "nat" },
+              "code": [
+                { "prim": "UNPAIR" },
+                { "prim": "SWAP" },
+                { "prim": "GET", "args": [ { "int": "6" } ] },
+                { "prim": "SWAP" },
+                { "prim": "GET" },
+                { "prim": "IF_NONE", "args": [ [ { "prim": "PUSH", "args": [ { "prim": "int" }, { "int": "406" } ] }, { "prim": "FAILWITH" } ], [] ] }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "is_operator",
+        "pure": true,
+        "description": "Checks if a given token operator exists.\n\n        ",
+        "implementations": [
+          {
+            "michelsonStorageView": {
+              "parameter": {
+                "prim": "pair",
+                "args": [
+                  { "prim": "address", "annots": [ "%owner" ] },
+                  { "prim": "pair", "args": [ { "prim": "address", "annots": [ "%operator" ] }, { "prim": "nat", "annots": [ "%token_id" ] } ] }
+                ]
+              },
+              "returnType": { "prim": "bool" },
+              "code": [ { "prim": "UNPAIR" }, { "prim": "SWAP" }, { "prim": "GET", "args": [ { "int": "3" } ] }, { "prim": "CAR" }, { "prim": "SWAP" }, { "prim": "MEM" } ]
+            }
+          }
+        ]
+      }
+    ],
+    "permissions": { "operator": "owner-or-operator-transfer", "receiver": "owner-no-hook", "sender": "owner-no-hook" }
+  }
